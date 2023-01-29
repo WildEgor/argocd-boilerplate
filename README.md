@@ -1,6 +1,6 @@
 # Usage
 
-For EKS:
+### For EKS:
 
 1) Create AWS Cluster:
 ```
@@ -16,6 +16,8 @@ and then use AWS EKS then set flag for eksctl or helm:
 ```
     eksctl scale nodegroup --cluster=apps --nodes=4 --name=apps-nodes
 ```
+
+### For local:
 
 1) Start minikube:
 ```
