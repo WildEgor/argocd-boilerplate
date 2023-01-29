@@ -4,7 +4,7 @@ For EKS:
 
 1) Create AWS Cluster:
 ```
-    eksctl create cluster -f ./k8s/cluster/skeleton.yaml --auto-kubeconfig
+    eksctl create cluster -f ./cluster/skeleton.yaml --auto-kubeconfig
 ```
 
 and then use AWS EKS then set flag for eksctl or helm:
