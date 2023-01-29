@@ -1,0 +1,34 @@
+{{- range $application := .Values.applications }}
+{{- range $namespace := $application.namespaces }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $namespace }}-{{ $application.name }}
+  namespace: argocd # Apply argocd apps to default namespace
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io # see. ...
+  {{- with $application.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  destination:
+    namespace: {{ $namespace }}
+    server: https://kubernetes.default.svc
+  project: default # you can use your own naming here
+  source:
+    path: common
+    repoURL: https://github.com/WildEgor/argocd-boilerplate
+    targetRevision: develop
+    helm:
+      valueFiles:
+        - values.yaml
+        - values/{{ $application.name }}.yaml
+        - values/{{ $namespace }}/{{ $application.name }}.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+{{- end }}
+{{- end }}

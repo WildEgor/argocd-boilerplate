@@ -1,0 +1,31 @@
+{{- range $application := .Values.applications }}
+{{- if $application.enabled }}
+{{ $valueFilePath := print "values/" $application.name ".yaml"  }}
+{{ $valueFileContent := $.Files.Get $valueFilePath | nindent 8  }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $application.name }}
+  namespace: {{ $application.namespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $application.namespace | default "argocd" }}
+  project: {{ $application.project | default "default" }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    path: ''
+    repoURL: {{ $application.repoURL }}
+    targetRevision: {{ $application.targetRevision }}
+    chart: {{ $application.chart }}
+    helm:
+      values: |
+        {{ $valueFileContent }}
+---
+{{- end }}
+{{- end }}

@@ -1,0 +1,35 @@
+config:
+  registries:
+    - name: Docker Hub
+      api_url: https://registry-1.docker.io
+      prefix: docker.io
+    - name: ECR
+      api_url: https://123.dkr.ecr.ap-south-1.amazonaws.com # use real account-id and region here
+      prefix: 123.dkr.ecr.ap-south-1.amazonaws.com # use real account-id and region here
+      default: true
+      ping: yes
+      tagsortmode: none
+      insecure: no
+      credentials: ext:/scripts/ecr-login.sh
+      credsexpire: 1m
+
+authScripts:
+  enabled: true
+  scripts:
+    ecr-login.sh: | # notice script name matches above    
+      #!/bin/sh
+      aws ecr --region $AWS_REGION get-authorization-token --output text --query 'authorizationData[].authorizationToken' | base64 -d
+
+extraEnv:
+  - name: AWS_REGION
+    value: "ap-south-1"
+  - name: AWS_ACCESS_KEY_ID
+    value: "***" # add own creds
+  - name: AWS_SECRET_ACCESS_KEY
+    value: "***"
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::123:role/ArgoCDUpdaterRole # create IAM role to ECR access
+  name: "argocd-image-updater"  # I think this is the default

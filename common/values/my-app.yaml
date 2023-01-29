@@ -1,0 +1,25 @@
+# common values
+
+nameOverride: my-app
+fullnameOverride: my-app
+
+image:
+  repository: 123.dkr.ecr.ap-south-1.amazonaws.com/my-app # use real data here
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+#  - name: aws-ecr-creds
+
+ports:
+  - port: 8081
+    targetPort: 8081
+    protocol: TCP
+    name: http
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

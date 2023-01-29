@@ -1,0 +1,46 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  namespace: apps
+  name: apps
+  region: ap-south-1
+  version: "1.19"
+
+nodeGroups:
+  # Spot instances
+  - name: spot
+    minSize: 0
+    maxSize: 2
+    desiredCapacity: 1
+    ssh:
+      allow: true
+    instancesDistribution:
+      instanceTypes: ["t3.small", "t3.nano", "t2.small"]
+      onDemandBaseCapacity: 0
+      onDemandPercentageAboveBaseCapacity: 0
+      spotAllocationStrategy: capacity-optimized
+    labels:
+      lifecycle: Ec2Spot # use nodeSelector in deployments
+      intent: apps
+      aws.amazon.com/spot: "true"
+      role: workers
+      tags:
+        k8s.io/cluster-autoscaler/node-template/label/lifecycle: Ec2Spot
+        k8s.io/cluster-autoscaler/node-template/label/intent: apps
+      iam:
+        withAddonPolicies:
+          autoScaler: true
+          albIngress: true
+  # On-Demand instances
+  - name: on-demand
+    instanceTypes: ["t3.small"]
+    minSize: 0
+    maxSize: 1
+    desiredCapacity: 1
+    ssh:
+      allow: true
+    labels:
+      lifecycle: OnDemand # use nodeSelector in deployments
+      intent: apps
+      role: workers
