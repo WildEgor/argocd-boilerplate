@@ -34,12 +34,15 @@ and then use AWS EKS then set flag for eksctl or helm:
     argocd login localhost:8080 --username admin --password [password]
     (Optional: argocd account update-password --current-password <previous_pass> --new-password <new_pass>)
     argocd repo add https://github.com/WildEgor/argocd-boilerplate --username <github_username> --password <github_token>
-    argocd app create apps --dest-namespace argocd --dest-server https://kubernetes.default.svc --repo https://github.com/WildEgor/argocd-boilerplate --path apps --revision develop
 ```
 3) Install updater:
 ```
     helm repo add argo https://argoproj.github.io/argo-helm
     helm upgrade argocd-image-updater argo/argocd-image-updater -n argocd --values .\argo\values\updater.yaml --install --debug
+```
+4) Apply apps:
+```
+    argocd app create apps --dest-namespace argocd --dest-server https://kubernetes.default.svc --repo https://github.com/WildEgor/argocd-boilerplate --path apps --revision develop
 ```
 
 # Hint
