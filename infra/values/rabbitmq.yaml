@@ -1,0 +1,34 @@
+rabbitmq:
+  enabled: true
+
+nameOverride: rabbitmq
+
+replicaCount: 1
+
+servicenameOverride: rabbitmq-service
+
+namespaceOverride: infra
+
+service:
+  type: ClusterIP
+
+ingress:
+  enabled: true
+  path: "/*"
+  ingressClassName: "nginx"
+
+auth:
+  username: user
+  password: root
+
+#nodeSelector:
+#  lifecycle: OnDemand
+
+#persistence:
+#  enabled: true
+#  existingClaim: "rabbitmq-data"
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m

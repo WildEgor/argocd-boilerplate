@@ -1,0 +1,30 @@
+replicaCount: 1
+
+architecture: standalone
+
+#persistence:
+#  enabled: true
+#  existingClaim: "mongodb-data"
+
+nameOverride: mongodb
+
+service:
+  nameOverride: mongodb
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.28
+  loadBalancerClass: nginx
+  nodePorts:
+    mongodb: 30000
+
+namespaceOverride: infra
+
+#nodeSelector:
+#  lifecycle: OnDemand
+
+auth:
+  rootUser: admin
+  rootPassword: root
+  usernames: ["user"]
+  passwords: ["123"]
+  databases: ["test-db"]
+
